@@ -8,7 +8,6 @@ Created on Fri Apr 15 22:05:51 2016
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import matplotlib.pyplot as plt
-import cvxopt
 from matplotlib import cm
 import random
 
@@ -33,7 +32,7 @@ def mutate(gene,size):
 # does basic mutation and progression
 def basicMutation(start):
     i = 0
-    while i<100:
+    while i<50:
         change = mutate(start,2)
         print(fitness(start)),
         print(fitness(change))
@@ -73,7 +72,7 @@ def sex(mom,dad):
 #returns a parent from a genepool     
 def rand_prod_parent(genepool):
     # multiplicative random distribution favors higher fitness individuals
-    pick = random.random()*random.random() * (len(genepool)-1)
+    pick = len(genepool) - random.random()*random.random() * (len(genepool)-1)
     parent = genepool[int(pick)]
     return parent
     
@@ -90,20 +89,25 @@ change_arr = []
 def final_loop(pop):
     #creates a list of fit individuals
     #sorts individuals by fitness and then seleccts parents from list
+  
     animals = population(pop)
     animals = sorted(animals,key=fitness)
     i = 0
-    while i<1000:
-        
+    #only one set mates at a time
+    while i<100:
+        #parents are selected using (1 - rand*rand) distribution to favor higher indices
         momy = rand_prod_parent(animals)
         dady = rand_prod_parent(animals)
         child = sex(momy,dady)
+        print(fitness(child))
         # check to see if the fitness of child is greater then leed male
         if fitness(child) > fitness(animals[-1]):
             change_arr.append(child)
              #take out last elemenet ie least fit
             animals.pop(0)
             animals.append(child)
+            print(animals)
+            
             
         i = i+1
     print(animals[-1])
@@ -114,6 +118,7 @@ def final_loop(pop):
 #graphs x^2 + y^2 = Z^2 (surface to be optimized)
 #as well as 
 def GrphSrf():
+    print("scattering")
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     ax.view_init(azim = 180+160,elev = 0)
@@ -129,13 +134,20 @@ def GrphSrf():
     Z = -.5*(X**2+Y**2)
     surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cm.coolwarm,
                            linewidth=0, antialiased=True)
-     
-    ax.scatter()                      
+                           
+    for x in range(0,3):
+        print("scattering")
+        #ax.scatter([change_arr[x][0]],[change_arr[x][1]],fitness(animals[-1]))
+        
+    #ax.scatter()                      
     plt.show()
+    
 
-
-
+for x in range(0,hlen(change_arr)):
+        print("scattering")
 
 #testing section
 #test each function 
+#result when population size is 10
+GrphSrf()
 print(final_loop(10))
