@@ -9,6 +9,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
+import matplotlib as mpl
 import random
 
 
@@ -99,8 +100,9 @@ def final_loop(pop):
         momy = rand_prod_parent(animals)
         dady = rand_prod_parent(animals)
         child = sex(momy,dady)
-        print(fitness(child))
+        print(child)
         # check to see if the fitness of child is greater then leed male
+        change_arr.append(child)
         if fitness(child) > fitness(animals[-1]):
             change_arr.append(child)
              #take out last elemenet ie least fit
@@ -126,28 +128,29 @@ def GrphSrf():
     ax.set_ylabel("Y")
     ax.set_zlabel("Z")
     
-    X = np.arange(-5,5,0.25)
-    Y = np.arange(-5,5,0.25)
+    X = np.arange(-10,10,2)
+    Y = np.arange(-10,10,2)
     X, Y = np.meshgrid(X, Y)
 
 
     Z = -.5*(X**2+Y**2)
     surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cm.coolwarm,
                            linewidth=0, antialiased=True)
-                           
-    for x in range(0,3):
-        print("scattering")
-        #ax.scatter([change_arr[x][0]],[change_arr[x][1]],fitness(animals[-1]))
+   # norm = mpl.colors.Normalize(vmin= 0,vmax = len(change_arr))
+    for x in range(0,len(change_arr)):
+        
+        ax.scatter([change_arr[x][0]],[change_arr[x][1]],fitness(change_arr[x]))
         
     #ax.scatter()                      
     plt.show()
     
 
-for x in range(0,hlen(change_arr)):
-        print("scattering")
+#for x in range(0,hlen(change_arr)):
+    #    print("scattering")
 
 #testing section
 #test each function 
 #result when population size is 10
+
+final_loop(10)
 GrphSrf()
-print(final_loop(10))
